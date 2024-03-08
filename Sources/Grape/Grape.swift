@@ -13,7 +13,7 @@ public struct Grape {
     
     fileprivate let grapeObjC = GrapeObjC.shared()
     
-    public func insert(rom url: URL) {
+    public func insert(game url: URL) {
         grapeObjC.insert(game: url)
     }
     

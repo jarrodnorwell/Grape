@@ -57,29 +57,28 @@ ScreenLayout screenLayout;
 }
 
 -(int16_t *) audioBuffer {
-    int16_t* buffer = new int16_t[1024 * 2];
+    static std::vector<int16_t> buffer(1024 * 2);
     uint32_t *original = grapeEmulator->spu.getSamples(699);
     for (int i = 0; i < 1024; i++) {
         uint32_t sample = original[i * 699 / 1024];
         buffer[i * 2 + 0] = sample >>  0;
         buffer[i * 2 + 1] = sample >> 16;
     }
-    return buffer;
+    delete[] original;
+    return buffer.data();
 }
 
--(uint32_t *) screenFramebuffer:(BOOL)isGBA {
-    uint32_t* framebuffer;
+-(uint32_t*) screenFramebuffer:(BOOL)isGBA {
+    static std::vector<uint32_t> framebuffer;
     if (isGBA)
-        framebuffer = new uint32_t[240 * 160];
+        framebuffer.resize(240 * 160);
     else
-        framebuffer = new uint32_t[256 * 192 * 2];
-    grapeEmulator->gpu.getFrame(framebuffer, isGBA);
-    return framebuffer;
+        framebuffer.resize(256 * 192 * 2);
+    grapeEmulator->gpu.getFrame(framebuffer.data(), isGBA);
+    return framebuffer.data();
 }
 
 -(void) updateScreenLayout:(CGSize)size {
-    NSLog(@"screen size = x = %f, y = %f", size.width, size.height);
-    
     screenLayout.update(size.width, size.height, false);
 }
 
@@ -89,7 +88,6 @@ ScreenLayout screenLayout;
     auto x = screenLayout.getTouchX(point.x, point.y);
     auto y = screenLayout.getTouchY(point.x, point.y);
     
-    NSLog(@"x = %i, y = %i", x, y);
     grapeEmulator->spi.setTouch(x, y);
 }
 
@@ -102,7 +100,6 @@ ScreenLayout screenLayout;
     auto x = screenLayout.getTouchX(point.x, point.y);
     auto y = screenLayout.getTouchY(point.x, point.y);
     
-    NSLog(@"x = %i, y = %i", x, y);
     grapeEmulator->spi.setTouch(x, y);
 }
 
