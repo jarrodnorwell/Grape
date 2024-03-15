@@ -136,7 +136,9 @@ void Wifi::transfer(int index) {
 
     for (size_t i = 0; i < connections.size(); i++) {
         // Read the packet from memory
-        uint16_t *data = new uint16_t[size / 2];
+        std::vector<uint16_t> data(size / 2);
+        
+        // uint16_t *data = new uint16_t[size / 2];
         for (size_t j = 0; j < size; j += 2)
             data[j / 2] = core->memory.read<uint16_t>(1, 0x4804000 + address + j);
 
@@ -145,7 +147,7 @@ void Wifi::transfer(int index) {
 
         // Add the packet to the queue
         connections[i]->mutex.lock();
-        connections[i]->packets.push_back(data);
+        connections[i]->packets.push_back(data.data());
         connections[i]->mutex.unlock();
     }
 
