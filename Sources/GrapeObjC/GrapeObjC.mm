@@ -13,7 +13,8 @@
 #include "settings.h"
 #include "screen_layout.h"
 
-Core* grapeEmulator = nullptr;
+std::unique_ptr<Core> grapeEmulator;
+// Core* grapeEmulator = nullptr;
 ScreenLayout screenLayout;
 
 @implementation GrapeObjC
@@ -39,9 +40,9 @@ ScreenLayout screenLayout;
     }
     
     if ([url.pathExtension.lowercaseString isEqualToString:@"nds"]) {
-        grapeEmulator = new Core([url.path UTF8String], "");
+        grapeEmulator = std::make_unique<Core>([url.path UTF8String], "");
     } else {
-        grapeEmulator = new Core("", [url.path UTF8String]);
+        grapeEmulator = std::make_unique<Core>("", [url.path UTF8String]);
     }
 }
 
