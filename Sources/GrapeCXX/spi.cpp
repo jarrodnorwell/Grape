@@ -31,7 +31,7 @@ bool Spi::loadFirmware() {
         delete[] firmware;
 
     // Load the firmware from a file if it exists
-    if (FILE *file = fopen((std::string(GrapeSysDataDirectory()) + std::string("/firmware.bin")).c_str(), "rb")) {
+    if (FILE *file = fopen((std::string(GrapeDirectory()) + std::string("/sysdata/firmware.bin")).c_str(), "rb")) {
         fseek(file, 0, SEEK_END);
         firmSize = ftell(file);
         fseek(file, 0, SEEK_SET);

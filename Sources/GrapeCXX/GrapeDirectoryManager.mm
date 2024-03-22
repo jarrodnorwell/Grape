@@ -9,8 +9,7 @@
 
 #import "GrapeSysDataDirectoryManager.h"
 
-const char* GrapeSysDataDirectory() {
-    return [[[[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject]
-             URLByAppendingPathComponent:@"Grape"]
-            URLByAppendingPathComponent:@"sysdata"].path UTF8String];
+const char* GrapeDirectory() {
+    return [[[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject]
+             URLByAppendingPathComponent:@"Grape"].path UTF8String];
 }

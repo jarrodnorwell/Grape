@@ -18,6 +18,25 @@ std::unique_ptr<Core> grapeEmulator;
 ScreenLayout screenLayout;
 
 @implementation GrapeObjC
+-(GrapeObjC *) init {
+    if (self = [super init]) {
+        NSURL* url = [NSURL URLWithString:[NSString stringWithCString:GrapeDirectory() encoding:NSUTF8StringEncoding]];
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:[[url URLByAppendingPathComponent:@"config"] URLByAppendingPathComponent:@"config.ini"].path]) {
+            if (!Settings::load(std::string(GrapeDirectory()) + "/config/config.ini")) {
+                auto path = std::string(GrapeDirectory());
+                
+                Settings::setBios7Path(path + "/sysdata/bios7.bin");
+                Settings::setBios7Path(path + "/sysdata/bios9.bin");
+                Settings::setFirmwarePath(path + "/sysdata/firmware.bin");
+                Settings::setGbaBiosPath(path + "/sysdata/gba_bios.bin");
+                Settings::setSdImagePath(path + "/sysdata/sd.img");
+                Settings::save();
+            }
+        }
+    } return self;
+}
+
 +(GrapeObjC *) sharedInstance {
     static dispatch_once_t onceToken;
     static GrapeObjC *sharedInstance = NULL;
@@ -28,14 +47,14 @@ ScreenLayout screenLayout;
 }
 
 -(void) insertGame:(NSURL *)url {
-    if (!Settings::load(std::string(GrapeSysDataDirectory()) + "/settings.ini")) {
-        auto path = std::string(GrapeSysDataDirectory());
+    if (!Settings::load(std::string(GrapeDirectory()) + "/config/config.ini")) {
+        auto path = std::string(GrapeDirectory());
         
-        Settings::setBios7Path(path + "/bios7.bin");
-        Settings::setBios7Path(path + "/bios9.bin");
-        Settings::setFirmwarePath(path + "/firmware.bin");
-        Settings::setGbaBiosPath(path + "/gba_bios.bin");
-        Settings::setSdImagePath(path + "/sd.img");
+        Settings::setBios7Path(path + "/sysdata/bios7.bin");
+        Settings::setBios7Path(path + "/sysdata/bios9.bin");
+        Settings::setFirmwarePath(path + "/sysdata/firmware.bin");
+        Settings::setGbaBiosPath(path + "/sysdata/gba_bios.bin");
+        Settings::setSdImagePath(path + "/sysdata/sd.img");
         Settings::save();
     }
     
@@ -110,5 +129,9 @@ ScreenLayout screenLayout;
 
 -(void) virtualControllerButtonUp:(int)button {
     grapeEmulator->input.releaseKey(button);
+}
+
+-(void) settingsSaved {
+    Settings::load(std::string(GrapeDirectory()) + "/config/config.ini");
 }
 @end

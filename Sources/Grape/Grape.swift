@@ -56,4 +56,8 @@ public struct Grape {
     public func virtualControllerButtonUp(_ button: Int32) {
         grapeObjC.virtualControllerButtonUp(button)
     }
+    
+    public func settingsSaved() {
+        grapeObjC.settingsSaved()
+    }
 }

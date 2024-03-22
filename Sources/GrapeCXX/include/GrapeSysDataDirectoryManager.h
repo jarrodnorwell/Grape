@@ -7,4 +7,4 @@
 
 #pragma once
 
-const char* GrapeSysDataDirectory(void);
+const char* GrapeDirectory(void);
